@@ -19,7 +19,7 @@ MINUS: '-';
 LEFT_BRACKET: '(';
 RIGHT_BRACKET: ')';
 ASSIGN: '=';
-SEPERATOR: ',';
+SEPARATOR: ',';
 
 // Root besteht aus hintereinanderausführenden Statements jeweils mit ';' getrennt
 root: statement (';' statement)* EOF;
@@ -32,12 +32,12 @@ assignment: VARIABLE ASSIGN expression;
 
 // Funktionsdefinition e.g. y(x) = x + 2
 functionDefinition:
-	name = VARIABLE LEFT_BRACKET (VARIABLE (SEPERATOR VARIABLE)*) RIGHT_BRACKET ASSIGN expression;
+	name = VARIABLE LEFT_BRACKET (VARIABLE (SEPARATOR VARIABLE)*) RIGHT_BRACKET ASSIGN expression;
 
 // Funktionsaufruf e.g. y(5)
 functionCall:
 	name = VARIABLE LEFT_BRACKET (
-		expression (SEPERATOR expression)*
+		expression (SEPARATOR expression)*
 	) RIGHT_BRACKET;
 
 // Klammerregel e.g. -(5 * 7)
