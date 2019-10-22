@@ -13,6 +13,10 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
         variableRepository = new Variables();
     }
 
+    public VariableRepository getVariableRepository() {
+        return variableRepository;
+    }
+
     public List<Double> getResults() {
         return results;
     }
@@ -59,7 +63,7 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
     @Override
     public Double visitAssignment(HPKParser.AssignmentContext ctx) {
         double value = visit(ctx.expression());
-        variableRepository.SetVariable(ctx.VARIABLE().getText(), value);
+        variableRepository.setVariable(ctx.VARIABLE().getText(), value);
         return 0.0;
     }
 
@@ -146,7 +150,7 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
      */
     @Override
     public Double visitVariable(HPKParser.VariableContext ctx) {
-        double variableValue = variableRepository.GetVariable(ctx.VARIABLE().getText());
+        double variableValue = variableRepository.getVariable(ctx.VARIABLE().getText());
         if (ctx.sign != null && ctx.sign.getText().equals(ctx.MINUS().getText())) {
             variableValue *= -1;
         }

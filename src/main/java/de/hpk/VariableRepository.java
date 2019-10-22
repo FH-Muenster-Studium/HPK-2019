@@ -1,7 +1,11 @@
 package de.hpk;
 
-public interface VariableRepository {
-    double GetVariable(String name);
+import java.util.Set;
 
-    void SetVariable(String name, Double value);
+public interface VariableRepository {
+    double getVariable(String name);
+
+    void setVariable(String name, Double value);
+
+    Set<String> getVariableNames();
 }
