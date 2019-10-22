@@ -32,10 +32,10 @@ import org.junit.Test;
 
 /**
  * Test of the Wulff RunsBeta-Script language.
- * 
+ *
  * @author nwulff
- * @since 16.10.2013
  * @version $Id: SimpleWRBScriptTest.java,v 1.4 2018/10/23 15:06:32 nwulff Exp $
+ * @since 16.10.2013
  */
 public class SimpleWRBScriptTest {
     final double eps = 1.E-8;
@@ -52,7 +52,7 @@ public class SimpleWRBScriptTest {
 
     /**
      * Get the actual implementation for the script test.
-     * 
+     *
      * @return script implementation
      */
     protected Script getScript() {
@@ -71,7 +71,7 @@ public class SimpleWRBScriptTest {
 
     /**
      * Test method for
-     * {@link de.lab4inf.wrb.Script#setVariable(java.lang.String,double)}. and
+     * {@link de.lab4inf.wrb.Script#setVariable(java.lang.String, double)}. and
      * {@link de.lab4inf.wrb.WRBScript#getVariable(java.lang.String)}.
      */
     @Test
@@ -101,7 +101,7 @@ public class SimpleWRBScriptTest {
     @Test
     public final void testMinus() throws Exception {
         String task = "2 - 6";
-        assertEquals( -4.0, script.parse(task), eps);
+        assertEquals(-4.0, script.parse(task), eps);
     }
 
     @Test
@@ -119,13 +119,13 @@ public class SimpleWRBScriptTest {
     @Test
     public void testSignedSecondArg() throws Exception {
         String task = "2 + -6";
-        assertEquals( -4.0, script.parse(task), eps);
+        assertEquals(-4.0, script.parse(task), eps);
     }
 
     @Test
     public final void testMixedFloat() throws Exception {
         String task = "2.0/3 - 5.2*4";
-        assertEquals(2./3.0-5.2*4, script.parse(task), eps);
+        assertEquals(2. / 3.0 - 5.2 * 4, script.parse(task), eps);
     }
 
     @Test
@@ -167,4 +167,39 @@ public class SimpleWRBScriptTest {
         fail("keine Exception geworfen");
     }
 
+
+    @Test
+    public final void Whitespace() throws Exception {
+        String task = "2 +.3";
+        //((WRBScript) script).setThrowing(false);
+        assertEquals(2.3, script.parse(task), eps);
+    }
+
+    @Test
+    public final void Whitespace2() throws Exception {
+        String task = "2 +(.3)";
+        //((WRBScript) script).setThrowing(false);
+        assertEquals(2.3, script.parse(task), eps);
+    }
+
+    @Test
+    public final void POW() throws Exception {
+        String task = "2**3";
+        //((WRBScript) script).setThrowing(false);
+        assertEquals(8.0, script.parse(task), eps);
+    }
+
+    @Test
+    public final void Mod() throws Exception {
+        String task = "12 % 13";
+        //((WRBScript) script).setThrowing(false);
+        assertEquals(12, script.parse(task), eps);
+    }
+
+    @Test
+    public final void E() throws Exception {
+        String task = "10 e 5";
+        //((WRBScript) script).setThrowing(false);
+        assertEquals(1000000, script.parse(task), eps);
+    }
 }

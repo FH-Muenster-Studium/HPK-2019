@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         System.out.println("test");
         WRBScript script = new WRBScript();
-        script.parse("6 ?7");
+        script.parse("6 E 7");
         //CharStream charStream = CharStreams.fromString("x=-42;x*7;5+7;7*7;12-17;12--17;8/-4;6*(7+3)");
         /*CharStream charStream = CharStreams.fromString("6 ?7");
         HPKLexer lexer = new HPKLexer(charStream);  //instantiate a lexer

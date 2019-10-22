@@ -199,7 +199,9 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
      */
     @Override
     public Double visitModulo(HPKParser.ModuloContext ctx) {
-        return super.visitModulo(ctx);
+        double number = visit(ctx.number);
+        double quotient = visit(ctx.quotient);
+        return number % quotient;
     }
 
     /**
@@ -225,7 +227,7 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
      */
     @Override
     public Double visitTiny(HPKParser.TinyContext ctx) {
-        return super.visitTiny(ctx);
+        return visit(ctx.left) * Math.pow(10, visit(ctx.right));
     }
 
     /**
@@ -253,6 +255,8 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
      */
     @Override
     public Double visitPower(HPKParser.PowerContext ctx) {
-        return super.visitPower(ctx);
+        double base = visit(ctx.base);
+        double exponent = visit(ctx.exponent);
+        return Math.pow(base, exponent);
     }
 }
