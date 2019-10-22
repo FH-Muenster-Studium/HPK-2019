@@ -201,6 +201,9 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
     public Double visitModulo(HPKParser.ModuloContext ctx) {
         double number = visit(ctx.number);
         double quotient = visit(ctx.quotient);
+        if (quotient == 0) {
+            throw new IllegalArgumentException("0 division: " + number + "%" + quotient);
+        }
         return number % quotient;
     }
 
@@ -242,6 +245,9 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
     public Double visitDivision(HPKParser.DivisionContext ctx) {
         double dividend = visit(ctx.dividend);
         double divisor = visit(ctx.divisor);
+        if (divisor == 0) {
+            throw new IllegalArgumentException("0 division: " + dividend + "%" + divisor);
+        }
         return dividend / divisor;
     }
 

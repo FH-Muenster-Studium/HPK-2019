@@ -24,7 +24,7 @@ public class WRBScript implements Script, ANTLRErrorListener {
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object o, int i, int i1, String s, RecognitionException e) {
         if (!throwing) return;
-        throw new IllegalArgumentException(e.getMessage());
+        throw new IllegalArgumentException(e);
     }
 
     @Override

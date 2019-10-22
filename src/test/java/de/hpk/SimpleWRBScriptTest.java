@@ -167,39 +167,84 @@ public class SimpleWRBScriptTest {
         fail("keine Exception geworfen");
     }
 
-
     @Test
     public final void Whitespace() throws Exception {
         String task = "2 +.3";
-        //((WRBScript) script).setThrowing(false);
         assertEquals(2.3, script.parse(task), eps);
     }
 
     @Test
     public final void Whitespace2() throws Exception {
         String task = "2 +(.3)";
-        //((WRBScript) script).setThrowing(false);
         assertEquals(2.3, script.parse(task), eps);
     }
 
     @Test
     public final void POW() throws Exception {
         String task = "2**3";
-        //((WRBScript) script).setThrowing(false);
         assertEquals(8.0, script.parse(task), eps);
+    }
+
+    @Test
+    public final void POWAssociative() throws Exception {
+        String task = "1**3**4";
+        assertEquals(1.0, script.parse(task), eps);
+    }
+
+    @Test
+    public final void POWAssociative2() throws Exception {
+        String task = "4**1**2";
+        assertEquals(4.0, script.parse(task), eps);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void POWError() throws Exception {
+        String task = "1***3";
+        assertEquals(8.0, script.parse(task), eps);
+        fail("keine Exception geworfen");
     }
 
     @Test
     public final void Mod() throws Exception {
         String task = "12 % 13";
-        //((WRBScript) script).setThrowing(false);
         assertEquals(12, script.parse(task), eps);
+    }
+
+    @Test
+    public final void Mod2() throws Exception {
+        String task = "12 mod 13";
+        assertEquals(12, script.parse(task), eps);
+    }
+
+    @Test
+    public final void Mod3() throws Exception {
+        String task = "11 mod 4 mod 3";
+        assertEquals(0.0, script.parse(task), eps);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void Mod4() throws Exception {
+        String task = "12 mod 0";
+        script.parse(task);
+        fail("keine Exception geworfen");
+    }
+
+    @Test
+    public final void Mod5() throws Exception {
+        String task = "0 mod 5";
+        assertEquals(0.0, script.parse(task), eps);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void DivideZero() throws Exception {
+        String task = "12 / 0";
+        script.parse(task);
+        fail("keine Exception geworfen");
     }
 
     @Test
     public final void E() throws Exception {
         String task = "10 e 5";
-        //((WRBScript) script).setThrowing(false);
         assertEquals(1000000, script.parse(task), eps);
     }
 }
