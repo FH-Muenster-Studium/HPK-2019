@@ -47,10 +47,9 @@ public class WRBScript implements Script, ANTLRErrorListener {
         parser.addErrorListener(this);
         ParseTree tree = parser.root();
         MathVisitor hpkVisitor = new MathVisitor();
-        hpkVisitor.visit(tree);
+        double result = hpkVisitor.visit(tree);
         variableRepository = hpkVisitor.getVariableRepository();
-        if (hpkVisitor.getResults().size() == 0) return 0.0;
-        return hpkVisitor.getResults().get(hpkVisitor.getResults().size() - 1);
+        return result;
     }
 
     /**

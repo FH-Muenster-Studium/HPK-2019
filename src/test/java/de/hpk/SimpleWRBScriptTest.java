@@ -247,4 +247,16 @@ public class SimpleWRBScriptTest {
         String task = "10 e 5";
         assertEquals(1000000, script.parse(task), eps);
     }
+
+    @Test
+    public final void Variables() throws Exception {
+        String task = "x0 = 7; x1 = 14; x1 / x0";
+        assertEquals(2.0, script.parse(task), eps);
+    }
+
+    @Test
+    public final void Variables2() throws Exception {
+        String task = "x.0 = 8; x.1 = 16; x.1 / x.0";
+        assertEquals(2.0, script.parse(task), eps);
+    }
 }

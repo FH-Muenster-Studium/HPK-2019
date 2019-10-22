@@ -32,11 +32,13 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
     @Override
     public Double visitRoot(HPKParser.RootContext ctx) {
         List<HPKParser.StatementContext> statements = ctx.statement();
+        double lastResult = 0.0;
         for (int i = 0, length = statements.size(); i < length; i++) {
             HPKParser.StatementContext statementContext = statements.get(i);
-            results.add(visit(statementContext));
+            lastResult = visit(statementContext);
+            results.add(lastResult);
         }
-        return 0.0;
+        return lastResult;
     }
 
     /**
