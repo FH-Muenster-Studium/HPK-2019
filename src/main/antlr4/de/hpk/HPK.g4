@@ -14,6 +14,7 @@ VARIABLE: ('a' ..'z' | 'A' ..'Z')+ NUMBER* VARIABLE*;
 
 POW: ('^' | '**');
 MODULO: ('mod' | '%');
+E: ('e' | 'E');
 PLUS: '+';
 MINUS: '-';
 LEFT_BRACKET: '(';
@@ -41,26 +42,27 @@ functionCall:
 	) RIGHT_BRACKET;
 
 // Klammerregel e.g. -(5 * 7)
-bracketExpression:
-	sign = MINUS? LEFT_BRACKET expression RIGHT_BRACKET;
+//bracketExpression:
+//	sign = MINUS? LEFT_BRACKET expression RIGHT_BRACKET;
 
 // Zahl kann positiv oder negativ deklariert sein e.g. -5; +5
-numberExpression: sign = (MINUS | PLUS)? NUMBER;
+//numberExpression: sign = (MINUS | PLUS)? NUMBER;
 
 // Eine Variable kann positiv oder negativ deklariert sein e.g. -x; +x
-variableExpression: sign = (MINUS | PLUS)? VARIABLE;
+//variableExpression: sign = (MINUS | PLUS)? VARIABLE;
 
 // <assoc = right> meint das der operator rechts associativ ist, so dass 1^2^3 als 1^(2^3) geparsed wird anstelle von (1^2)^3 https://de.wikipedia.org/wiki/Operatorassoziativit%C3%A4t
 
 expression:
-	bracketExpression													# Bracket
-	| left = expression 'e' right = expression							# Tiny
+	sign = MINUS? LEFT_BRACKET expression RIGHT_BRACKET													# Bracket
+	| left = expression E right = expression							# Tiny
 	| <assoc = right> base = expression POW exponent = expression		# Power
 	| dividend = expression '/' divisor = expression					# Division
-	| factor = expression '*' factor = expression						# Multiplication
+	| firstFactor = expression '*' lastFactor = expression						# Multiplication
 	| <assoc = right> number = expression MODULO quotient = expression	# Modulo
 	| minuend = expression MINUS subtrahend = expression				# Subtraction
 	| firstSummand = expression PLUS lastSummand = expression			# Addition
 	| functionCall														# FunctionCaller
-	| numberExpression													# Number
-	| variableExpression;
+	| sign = (MINUS | PLUS)? NUMBER										# Number
+	| sign = (MINUS | PLUS)? VARIABLE												# Variable
+	;
