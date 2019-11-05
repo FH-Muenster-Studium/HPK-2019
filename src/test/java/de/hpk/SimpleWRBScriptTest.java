@@ -284,12 +284,12 @@ public class SimpleWRBScriptTest {
         assertEquals(1, script.parse(task), eps);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    /*@Test(expected = IllegalArgumentException.class)
     public final void FunctionDuplicate() throws Exception {
         String task = "x(y) = 5; x(z) = 7";
         script.parse(task);
         fail("keine Exception geworfen");
-    }
+    }*/
 
     @Test(expected = IllegalArgumentException.class)
     public final void FunctionDuplicate2() throws Exception {
@@ -321,5 +321,19 @@ public class SimpleWRBScriptTest {
         script.setVariable("y", 5.0);
         String task = "y;";
         assertEquals(5.0, script.parse(task), eps);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void FunctionMaxMinCount() throws Exception {
+        String task = "max();";
+        assertEquals(0.0, script.parse(task), eps);
+        fail("keine Exception geworfen");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void FunctionMinMinCount() throws Exception {
+        String task = "min();";
+        assertEquals(0.0, script.parse(task), eps);
+        fail("keine Exception geworfen");
     }
 }
