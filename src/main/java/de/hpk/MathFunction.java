@@ -23,7 +23,7 @@ public class MathFunction implements Function {
         int length = variables.size() - 1;
         this.parameterNames = new String[length];
         for (int i = 0; i < length; i++) {
-            parameterNames[i] = functionDefinitionContext.VARIABLE(i + 1).getText();
+            parameterNames[i] = variables.get(i + 1).getText();
         }
     }
 
