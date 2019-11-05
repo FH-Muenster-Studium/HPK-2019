@@ -10,50 +10,50 @@ public class FunctionRepositoryImpl implements FunctionRepository {
     private final HashMap<String, Function> functions = new HashMap<>();
 
     public FunctionRepositoryImpl() {
-        functions.put("sin", args -> {
+        setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.sin(args[0]);
-        });
-        functions.put("cos", args -> {
+        }, "sin");
+        setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.cos(args[0]);
-        });
-        functions.put("tan", args -> {
+        }, "cos");
+        setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.tan(args[0]);
-        });
-        functions.put("sinh", args -> {
+        }, "tan");
+        setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.sinh(args[0]);
-        });
-        functions.put("cosh", args -> {
+        }, "sinh");
+        setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.cosh(args[0]);
-        });
-        functions.put("tanh", args -> {
+        }, "cosh");
+        setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.tanh(args[0]);
-        });
-        functions.put("asin", args -> {
+        }, "tanh");
+        setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.asin(args[0]);
-        });
-        functions.put("acos", args -> {
+        }, "asin");
+        setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.acos(args[0]);
-        });
-        functions.put("atan", args -> {
+        }, "acos");
+        setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.atan(args[0]);
-        });
+        }, "atan");
         setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.log(args[0]) / Math.log(2);
         }, "ld", "lb", "log2");
-        functions.put("ln", args -> {
+        setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.log(args[0]);
-        });
+        }, "ln");
         setFunction(args -> {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.log10(args[0]);
@@ -62,7 +62,7 @@ public class FunctionRepositoryImpl implements FunctionRepository {
             FunctionUtils.checkFunctionCount(args.length, 1);
             return Math.log(args[0]) / Math.log(Math.E);
         }, "logE");
-        functions.put("min", args -> {
+        setFunction(args -> {
             FunctionUtils.checkFunctionCountMin(args.length, 1);
             double minValue = -1;
             boolean initialized = false;
@@ -74,7 +74,7 @@ public class FunctionRepositoryImpl implements FunctionRepository {
                 }
             }
             return minValue;
-        });
+        }, "min");
         setFunction(args -> {
             FunctionUtils.checkFunctionCountMin(args.length, 1);
             double maxValue = -1;
@@ -107,7 +107,7 @@ public class FunctionRepositoryImpl implements FunctionRepository {
     }
 
     private void setFunction(Function function, String... names) {
-        for (int i = 0, length = names.length;i < length;i++) {
+        for (int i = 0, length = names.length; i < length; i++) {
             functions.put(names[i], function);
         }
     }
