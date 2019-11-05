@@ -3,7 +3,7 @@ package de.hpk;
 import de.lab4inf.wrb.Script;
 import de.lab4inf.wrb.WRBScript;
 
-public class MathTests extends AbstractScriptTest {
+public class MathTest extends AbstractScriptTest {
 
     /**
      * Factory method, get a fresh script implementation for the test.
