@@ -8,4 +8,13 @@ public interface VariableRepository {
     void setVariable(String name, Double value);
 
     Set<String> getVariableNames();
+
+    VariableRepository getParent();
+
+    default VariableRepository concat(VariableRepository variableRepository) {
+        for (String name : getVariableNames()) {
+            variableRepository.setVariable(name, getVariable(name));
+        }
+        return variableRepository;
+    }
 }

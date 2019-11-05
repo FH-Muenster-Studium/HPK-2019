@@ -26,7 +26,7 @@ ASSIGN: '=';
 SEPARATOR: ',';
 
 // Root besteht aus hintereinanderausführenden Statements jeweils mit ';' getrennt
-root: statement (';' statement)* EOF;
+root: statement (';' statement)* ';'? EOF;
 
 // Ein statement ist eine expression, eine Funktionsdefinition oder die Festlegung einer Variable
 statement: (expression | assignment | functionDefinition);
@@ -36,12 +36,12 @@ assignment: VARIABLE ASSIGN expression;
 
 // Funktionsdefinition e.g. y(x) = x + 2
 functionDefinition:
-	name = VARIABLE LEFT_BRACKET (VARIABLE (SEPARATOR VARIABLE)*) RIGHT_BRACKET ASSIGN expression;
+	name = VARIABLE LEFT_BRACKET (VARIABLE? (SEPARATOR VARIABLE)*) RIGHT_BRACKET ASSIGN expression;
 
 // Funktionsaufruf e.g. y(5)
 functionCall:
 	name = VARIABLE LEFT_BRACKET (
-		expression (SEPARATOR expression)*
+		expression? (SEPARATOR expression)*
 	) RIGHT_BRACKET;
 
 // Klammerregel e.g. -(5 * 7)

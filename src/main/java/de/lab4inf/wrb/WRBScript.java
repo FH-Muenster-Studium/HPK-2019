@@ -13,7 +13,9 @@ import java.util.Set;
 
 public class WRBScript implements Script, ANTLRErrorListener {
 
-    private VariableRepository variableRepository = new Variables();
+    private VariableRepository variableRepository = new VariableRepositoryImpl();
+
+    private FunctionRepository functionRepository = new FunctionRepositoryImpl();
 
     private boolean throwing = true;
 
@@ -41,15 +43,15 @@ public class WRBScript implements Script, ANTLRErrorListener {
 
     private double parse(CharStream charStream) {
         HPKLexer lexer = new HPKLexer(charStream);
+        lexer.removeErrorListeners();
         lexer.addErrorListener(this);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         HPKParser parser = new HPKParser(tokens);
+        parser.removeErrorListeners();
         parser.addErrorListener(this);
         ParseTree tree = parser.root();
-        MathVisitor hpkVisitor = new MathVisitor();
-        double result = hpkVisitor.visit(tree);
-        variableRepository = hpkVisitor.getVariableRepository();
-        return result;
+        MathVisitor hpkVisitor = new MathVisitor(variableRepository, functionRepository);
+        return hpkVisitor.visit(tree);
     }
 
     /**
@@ -84,7 +86,7 @@ public class WRBScript implements Script, ANTLRErrorListener {
      */
     @Override
     public Set<String> getFunctionNames() {
-        return null;
+        return functionRepository.getFunctionNames();
     }
 
     /**
@@ -105,7 +107,7 @@ public class WRBScript implements Script, ANTLRErrorListener {
      */
     @Override
     public void setFunction(String name, Function fct) {
-
+        functionRepository.setFunction(name, fct);
     }
 
     /**
@@ -116,7 +118,7 @@ public class WRBScript implements Script, ANTLRErrorListener {
      */
     @Override
     public Function getFunction(String name) {
-        return null;
+        return functionRepository.getFunction(name);
     }
 
     /**
@@ -153,11 +155,24 @@ public class WRBScript implements Script, ANTLRErrorListener {
      *
      * @param that another script with variables and functions to add
      * @return the (optional new)) build script.
-     */
+     **/
     @Override
     public Script concat(Script that) {
         WRBScript script = new WRBScript();
-        script.variableRepository = variableRepository;
+        getVariableNames().forEach(varName -> {
+            double var = getVariable(varName);
+            script.setVariable(varName, var);
+        });
+        getFunctionNames().forEach((fctName) -> {
+            script.setFunction(fctName, getFunction(fctName));
+        });
+        that.getVariableNames().forEach(varName -> {
+            double var = that.getVariable(varName);
+            script.setVariable(varName, var);
+        });
+        that.getFunctionNames().forEach((fctName) -> {
+            script.setFunction(fctName, that.getFunction(fctName));
+        });
         return script;
     }
 

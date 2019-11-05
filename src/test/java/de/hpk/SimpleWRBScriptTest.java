@@ -259,4 +259,67 @@ public class SimpleWRBScriptTest {
         String task = "x.0 = 8; x.1 = 16; x.1 / x.0";
         assertEquals(2.0, script.parse(task), eps);
     }
+
+    @Test
+    public final void FunctionTest1() throws Exception {
+        String task = "x = 7; y = 5; z(x) = x + 1 + y; z(5)";
+        assertEquals(11.0, script.parse(task), eps);
+    }
+
+    @Test
+    public final void FunctionTest2() throws Exception {
+        String task = "x = 7; y = 5; z(x, g) = x + 1 + y + g; z(5, 7)";
+        assertEquals(18.0, script.parse(task), eps);
+    }
+
+    @Test
+    public final void FunctionTest3() throws Exception {
+        String task = "z() = 1; z()";
+        assertEquals(1, script.parse(task), eps);
+    }
+
+    @Test
+    public final void FunctionTest4() throws Exception {
+        String task = "z(x) = 1; z(1)";
+        assertEquals(1, script.parse(task), eps);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void FunctionDuplicate() throws Exception {
+        String task = "x(y) = 5; x(z) = 7";
+        script.parse(task);
+        fail("keine Exception geworfen");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void FunctionDuplicate2() throws Exception {
+        String task = "x(y) = 5; y(x(4))";
+        script.parse(task);
+        fail("keine Exception geworfen");
+    }
+
+    @Test
+    public final void FunctionMulti() throws Exception {
+        String task = "y(x) = x + 1; x(y) = 5 + y; y(x(4))";
+        assertEquals(10.0, script.parse(task), eps);
+    }
+
+    @Test
+    public final void FunctionMultiSemicolon() throws Exception {
+        String task = "y(x) = x + 1; x(y) = 5 + y; y(x(4));";
+        assertEquals(10.0, script.parse(task), eps);
+    }
+
+    @Test
+    public final void FunctionSemicolon() throws Exception {
+        String task = "y(x) = x";
+        assertEquals(0.0, script.parse(task), eps);
+    }
+
+    @Test
+    public final void VariableFromTest() throws Exception {
+        script.setVariable("y", 5.0);
+        String task = "y;";
+        assertEquals(5.0, script.parse(task), eps);
+    }
 }

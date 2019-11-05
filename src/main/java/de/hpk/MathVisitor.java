@@ -1,5 +1,7 @@
 package de.hpk;
 
+import de.lab4inf.wrb.Function;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,14 +9,29 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
 
     private final List<Double> results = new ArrayList<>();
 
-    private final VariableRepository variableRepository;
+    private VariableRepository variableRepository;
+
+    private final FunctionRepository functionRepository;
+
+    public MathVisitor(VariableRepository variableRepository, FunctionRepository functionRepository) {
+        this.variableRepository = variableRepository;
+        this.functionRepository = functionRepository;
+    }
 
     public MathVisitor() {
-        variableRepository = new Variables();
+        this(new VariableRepositoryImpl(), new FunctionRepositoryImpl());
+    }
+
+    public void setVariableRepository(VariableRepository variableRepository) {
+        this.variableRepository = variableRepository;
     }
 
     public VariableRepository getVariableRepository() {
         return variableRepository;
+    }
+
+    public FunctionRepository getFunctionRepository() {
+        return functionRepository;
     }
 
     public List<Double> getResults() {
@@ -66,7 +83,8 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
     public Double visitAssignment(HPKParser.AssignmentContext ctx) {
         double value = visit(ctx.expression());
         variableRepository.setVariable(ctx.VARIABLE().getText(), value);
-        return 0.0;
+        //return 0.0;TODO: ?
+        return value;
     }
 
     /**
@@ -79,7 +97,10 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
      */
     @Override
     public Double visitFunctionDefinition(HPKParser.FunctionDefinitionContext ctx) {
-        return super.visitFunctionDefinition(ctx);
+        MathFunction function = new MathFunction(this, ctx);
+        String name = ctx.name.getText();
+        functionRepository.setFunction(name, function);
+        return 0.0;
     }
 
     /**
@@ -92,7 +113,14 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
      */
     @Override
     public Double visitFunctionCall(HPKParser.FunctionCallContext ctx) {
-        return super.visitFunctionCall(ctx);
+        Function function = functionRepository.getFunction(ctx.name.getText());
+        List<HPKParser.ExpressionContext> expressionNodes = ctx.expression();
+        int length = expressionNodes.size();
+        double[] args = new double[length];
+        for (int i = 0; i < length; i++) {
+            args[i] = visit(expressionNodes.get(i));
+        }
+        return function.eval(args);
     }
 
     /**
@@ -185,7 +213,7 @@ public class MathVisitor extends HPKBaseVisitor<Double> {
     @Override
     public Double visitNumber(HPKParser.NumberContext ctx) {
         double value = Double.parseDouble(ctx.NUMBER().getText());
-        if (ctx.sign != null && ctx.sign.getText().equals(ctx.MINUS().getText())) {
+        if (ctx.sign != null && ctx.MINUS() != null && ctx.sign.getText().equals(ctx.MINUS().getText())) {
             value *= -1;
         }
         return value;
