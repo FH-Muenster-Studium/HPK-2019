@@ -1,6 +1,7 @@
 package de.hpk;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public class VariableRepositoryImpl implements VariableRepository {
@@ -34,10 +35,11 @@ public class VariableRepositoryImpl implements VariableRepository {
     @Override
     public Set<String> getVariableNames() {
         Set<String> variableNames = variables.keySet();
+        HashSet<String> allVariableNames = new HashSet<>(variableNames);
         if (parentVariableRepository != null) {
-            variableNames.addAll(parentVariableRepository.getVariableNames());
+            allVariableNames.addAll(parentVariableRepository.getVariableNames());
         }
-        return variableNames;
+        return allVariableNames;
     }
 
     public VariableRepository getParent() {

@@ -30,6 +30,9 @@ import de.lab4inf.wrb.WRBScript;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Test of the Wulff RunsBeta-Script language.
  *
@@ -335,5 +338,34 @@ public class SimpleWRBScriptTest {
         String task = "min();";
         assertEquals(0.0, script.parse(task), eps);
         fail("keine Exception geworfen");
+    }
+
+    @Test
+    public final void FunctionTanHNull() throws Exception {
+        String task = "tanh(0)";
+        assertEquals(0.0, script.parse(task), eps);
+    }
+
+    @Test
+    public final void NegativeVariable() throws Exception {
+        String task = "y = 1; -y";
+        assertEquals(-1.0, script.parse(task), eps);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void FunctionCountMismatch() throws Exception {
+        String task = "tanh()";
+        script.parse(task);
+        fail("keine Exception geworfen");
+    }
+
+    @Test
+    public final void VisitorResults() throws Exception {
+        String task = "y = 1; -y";
+        List<Double> results = new ArrayList<>();
+        results.add(1.0);
+        results.add(-1.0);
+        assertEquals(-1.0, script.parse(task), eps);
+        assertEquals(results, ((WRBScript)script).getResults());
     }
 }

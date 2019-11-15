@@ -418,6 +418,30 @@ public abstract class AbstractScriptTest {
         assertEquals( -29.99998, script.parse(task), EPS);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public final void testTinyMinus2() throws Exception {
+        String task = "2.0e--5 -- 3.0e+1";
+        script.parse(task);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void testTinyMinus3() throws Exception {
+        String task = "2.0e-+5 -- 3.0e+1";
+        script.parse(task);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void testTinyMinus4() throws Exception {
+        String task = "2.0e-5 - 3.0-e+1";
+        script.parse(task);
+    }
+
+    @Test
+    public final void testTinyMinus5() throws Exception {
+        String task = "-2.0e-5 - -3.0e+1";
+        assertEquals( 29.99998, script.parse(task), EPS);
+    }
+
     @Test
     public final void testConstant() throws Exception {
         String task = "0815; 4711;";

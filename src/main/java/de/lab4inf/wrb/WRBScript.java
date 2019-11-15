@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.BitSet;
+import java.util.List;
 import java.util.Set;
 
 public class WRBScript implements Script, ANTLRErrorListener {
@@ -18,6 +19,8 @@ public class WRBScript implements Script, ANTLRErrorListener {
     private FunctionRepository functionRepository = new FunctionRepositoryImpl();
 
     private boolean throwing = true;
+
+    private List<Double> results;
 
     public WRBScript() {
 
@@ -51,6 +54,7 @@ public class WRBScript implements Script, ANTLRErrorListener {
         parser.addErrorListener(this);
         ParseTree tree = parser.root();
         MathVisitor hpkVisitor = new MathVisitor(variableRepository, functionRepository);
+        results = hpkVisitor.getResults();
         return hpkVisitor.visit(tree);
     }
 
@@ -174,6 +178,10 @@ public class WRBScript implements Script, ANTLRErrorListener {
             script.setFunction(fctName, that.getFunction(fctName));
         });
         return script;
+    }
+
+    public List<Double> getResults() {
+        return results;
     }
 
     public void setThrowing(boolean throwing) {

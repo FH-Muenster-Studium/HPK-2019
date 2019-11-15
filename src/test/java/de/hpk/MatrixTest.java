@@ -32,9 +32,9 @@ public class MatrixTest {
     @BeforeClass
     public static void setUp() {
         System.out.println("Setup tests");
-        matrixLeft = new Matrix(1000, 1000);
+        matrixLeft = new Matrix(100, 100);
         fillMatrix(matrixLeft);
-        matrixRight = new Matrix(1000, 1000);
+        matrixRight = new Matrix(100, 100);
         fillMatrix(matrixRight);
         long time = System.nanoTime();
         matrixResult = matrixLeft.multiply(matrixRight);
@@ -109,6 +109,16 @@ public class MatrixTest {
         }
     }
 
+    @Test
+    public void testToString() {
+        Matrix matrix = new Matrix(2, 2);
+        matrix.values[0][0] = 1;
+        matrix.values[0][1] = 0;
+        matrix.values[1][0] = 0;
+        matrix.values[1][1] = 1;
+        Assert.assertEquals("1.0,0.0\n0.0,1.0\n", matrix.toString());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testNegativeRows() {
         Matrix negativeRows = new Matrix(-100, 100);
@@ -122,6 +132,14 @@ public class MatrixTest {
     @Test(expected = IllegalArgumentException.class)
     public void testNegativeRowsAndColumns() {
         Matrix negativeRows = new Matrix(-100, -100);
+    }
+
+    @Test
+    public void testEqualsWrongObjectType() {
+        Random random = new Random();
+        int firstRows = Math.abs(random.nextInt() % 1000);
+        int firstColumns = Math.abs(random.nextInt() % 1000);
+        Assert.assertNotEquals(new Matrix(firstRows, firstColumns), 3);
     }
 
     @Test(expected = IllegalArgumentException.class)
