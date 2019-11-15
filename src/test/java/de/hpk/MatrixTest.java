@@ -40,7 +40,7 @@ public class MatrixTest {
 
         @Override
         public void run() {
-            for (int j = 0; j < 2; j++) {
+            for (int j = 0; j < right.columns; j++) {
                 result.values[row][j] = vectorMultiplication(left.values[row], right.values[j]);
             }
             this.semaphore.release();
@@ -70,8 +70,8 @@ public class MatrixTest {
         private Matrix transpose() {
             if (rows == 0 || columns == 0) return new Matrix(this);
             Matrix transposed = new Matrix(columns, rows);
-            for (int i = 0; i < values.length; i++)
-                for (int j = 0; j < values[0].length; j++)
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < columns; j++)
                     transposed.values[j][i] = values[i][j];
             return transposed;
         }
@@ -80,24 +80,27 @@ public class MatrixTest {
     @Before
     public final void setUp() {
         System.out.println("Setup tests");
-        matrixLeft = new Matrix(2, 2);
+        matrixLeft = new Matrix(1000, 500);
         fillMatrix(matrixLeft);
-        printMatrix(matrixLeft);
-        System.out.println("-----");
-        matrixRight = new Matrix(2, 2);
+        //printMatrix(matrixLeft);
+        //System.out.println("-----");
+        matrixRight = new Matrix(500, 1000);
         fillMatrix(matrixRight);
-        printMatrix(matrixRight);
-        System.out.println("-----");
-        matrixResult = new Matrix(2, 2);
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 2; j++) {
-                for (int k = 0; k < 2; k++) {
-                    matrixResult.values[i][j] += matrixLeft.values[i][k] * matrixRight.values[k][j];
+        //printMatrix(matrixRight);
+        //System.out.println("-----");
+        matrixResult = new Matrix(matrixLeft.rows, matrixRight.columns);
+        int l = matrixLeft.rows;
+        int n = matrixLeft.columns;
+        int m = matrixLeft.columns;//matrixRight.rows
+        for (int i = 0; i < l; i++) {
+            for (int k = 0; k < n; k++) {
+                for (int j = 0; j < m; j++) {
+                    matrixResult.values[i][k] += matrixLeft.values[i][j] * matrixRight.values[j][k];
                 }
             }
         }
-        printMatrix(matrixResult);
-        System.out.println("-----");
+        //printMatrix(matrixResult);
+        //System.out.println("-----");
         Assert.assertTrue(equalsMatrix(matrixLeft, matrixLeft));
         Assert.assertTrue(equalsMatrix(matrixRight, matrixRight));
         Assert.assertTrue(equalsMatrix(matrixResult, matrixResult));
@@ -108,20 +111,22 @@ public class MatrixTest {
     @Test
     public void TestAlgorithm3() throws InterruptedException {
         System.out.println("Test 3");
-        printMatrix(matrixLeft);
-        System.out.println("-----");
-        printMatrix(matrixRight);
-        System.out.println("-----");
+        //printMatrix(matrixLeft);
+        //System.out.println("-----");
+        //printMatrix(matrixRight);
+        //System.out.println("-----");
         Matrix r = matrixRight.transpose();
-        Matrix c = new Matrix(2, 2);
-        Semaphore semaphore = new Semaphore(matrixLeft.rows, false);
+        Matrix c = new Matrix(matrixLeft.rows, matrixRight.columns);
+        Semaphore semaphore = new Semaphore(/*matrixLeft.rows*/0, false);
         for (int i = 0; i < matrixLeft.rows; i++) {
             threadPoolExecutor.execute(new MatrixWorker(i, matrixLeft, r, c, semaphore));
         }
-        System.out.println("semaphore.acquire()");
-        semaphore.acquire();
-        System.out.println("semaphore.acquire() done");
-        printMatrix(c);
+        //System.out.println("semaphore.acquire()");
+        for (int i = 0; i < matrixLeft.rows; i++) {
+            semaphore.acquire();
+        }
+        //System.out.println("semaphore.acquire() done");
+        //printMatrix(c);
         System.out.println("-----");
         Assert.assertTrue(equalsMatrix(matrixResult, c));
         System.out.println("Test 3 done");
