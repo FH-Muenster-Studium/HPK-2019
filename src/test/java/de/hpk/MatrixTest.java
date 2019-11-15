@@ -1,7 +1,10 @@
 package de.hpk;
 
+import de.hpk.matrix.Matrix;
+import de.hpk.matrix.MatrixWorker;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Random;
@@ -12,163 +15,142 @@ import java.util.concurrent.Semaphore;
 public class MatrixTest {
 
     // 1. Zeile = row, 2. Spalte = column
-    Matrix matrixLeft;
+    private static Matrix matrixLeft;
 
-    Matrix matrixRight;
+    private static Matrix matrixRight;
 
-    Matrix matrixResult;
+    private static Matrix matrixResult;
 
-    private final Executor threadPoolExecutor = Executors.newFixedThreadPool(8);
+    private static long timeForSingleThread;
 
-    class MatrixWorker implements Runnable {
+    private static long timeForAlgorithm3;
 
-        private final int row;
+    protected static final double EPS = 1.E-8;
 
-        private final Matrix result;
+    private static final Executor threadPoolExecutor = Executors.newFixedThreadPool(8);
 
-        private final Matrix left, right;
-
-        private final Semaphore semaphore;
-
-        public MatrixWorker(int row, Matrix left, Matrix right, Matrix result, Semaphore semaphore) {
-            this.row = row;
-            this.left = left;
-            this.right = right;
-            this.result = result;
-            this.semaphore = semaphore;
-        }
-
-        @Override
-        public void run() {
-            for (int j = 0; j < right.columns; j++) {
-                result.values[row][j] = vectorMultiplication(left.values[row], right.values[j]);
-            }
-            this.semaphore.release();
-        }
-    }
-
-    public class Matrix {
-
-        public final int rows;
-
-        public final int columns;
-
-        public double[][] values;
-
-        public Matrix(int rows, int columns) {
-            this.rows = rows;
-            this.columns = columns;
-            this.values = new double[rows][columns];
-        }
-
-        public Matrix(Matrix matrix) {
-            this.rows = matrix.rows;
-            this.columns = matrix.columns;
-            this.values = matrix.values;
-        }
-
-        private Matrix transpose() {
-            if (rows == 0 || columns == 0) return new Matrix(this);
-            Matrix transposed = new Matrix(columns, rows);
-            for (int i = 0; i < rows; i++)
-                for (int j = 0; j < columns; j++)
-                    transposed.values[j][i] = values[i][j];
-            return transposed;
-        }
-    }
-
-    @Before
-    public final void setUp() {
+    @BeforeClass
+    public static void setUp() {
         System.out.println("Setup tests");
-        matrixLeft = new Matrix(1000, 500);
+        matrixLeft = new Matrix(1000, 1000);
         fillMatrix(matrixLeft);
-        //printMatrix(matrixLeft);
-        //System.out.println("-----");
-        matrixRight = new Matrix(500, 1000);
+        matrixRight = new Matrix(1000, 1000);
         fillMatrix(matrixRight);
-        //printMatrix(matrixRight);
-        //System.out.println("-----");
-        matrixResult = new Matrix(matrixLeft.rows, matrixRight.columns);
-        int l = matrixLeft.rows;
-        int n = matrixLeft.columns;
-        int m = matrixLeft.columns;//matrixRight.rows
-        for (int i = 0; i < l; i++) {
-            for (int k = 0; k < n; k++) {
-                for (int j = 0; j < m; j++) {
-                    matrixResult.values[i][k] += matrixLeft.values[i][j] * matrixRight.values[j][k];
-                }
+        long time = System.nanoTime();
+        matrixResult = matrixLeft.multiply(matrixRight);
+        timeForSingleThread = System.nanoTime() - time;
+        Assert.assertEquals(matrixLeft, matrixLeft);
+        Assert.assertEquals(matrixRight, matrixRight);
+        Assert.assertEquals(matrixResult, matrixResult);
+        Assert.assertNotEquals(matrixResult, matrixRight);
+        System.out.println("Setup tests done");
+    }
+
+    @Test
+    public void testTranspose() {
+        Matrix matrix = new Matrix(100, 100);
+        fillMatrix(matrix);
+        Assert.assertEquals(matrix.transpose().transpose(), matrix);
+        Random random = new Random();
+        matrix = new Matrix(Math.abs(random.nextInt() % 1000), Math.abs(random.nextInt() % 1000));
+        fillMatrix(matrix);
+        Assert.assertEquals(matrix.transpose().transpose(), matrix);
+    }
+
+    @Test
+    public void testTransposeZeroRows() {
+        Random random = new Random();
+        int columns = Math.abs(random.nextInt() % 1000);
+        Matrix matrix = new Matrix(0, columns);
+        fillMatrix(matrix);
+        Assert.assertEquals(matrix, matrix.transpose());
+    }
+
+    @Test
+    public void testTransposeZeroColumns() {
+        Random random = new Random();
+        int rows = Math.abs(random.nextInt() % 1000);
+        Matrix matrix = new Matrix(rows, 0);
+        fillMatrix(matrix);
+        Assert.assertEquals(matrix, matrix.transpose());
+    }
+
+    @Test
+    public void testTransposeZeroRowsAndColumns() {
+        Matrix matrix = new Matrix(0, 0);
+        fillMatrix(matrix);
+        Assert.assertEquals(matrix, matrix.transpose());
+    }
+
+    @Test
+    public void testTransposeRowAndColumnsCount() {
+        Random random = new Random();
+        int rows = Math.abs(random.nextInt() % 1000);
+        int columns = Math.abs(random.nextInt() % 1000);
+        Matrix matrix = new Matrix(rows, columns);
+        fillMatrix(matrix);
+        Matrix transposedMatrix = matrix.transpose();
+        Assert.assertEquals(matrix.rows, transposedMatrix.columns);
+        Assert.assertEquals(matrix.columns, transposedMatrix.rows);
+    }
+
+    @Test
+    public void testTransposeValues() {
+        Random random = new Random();
+        int rows = Math.abs(random.nextInt() % 1000);
+        int columns = Math.abs(random.nextInt() % 1000);
+        Matrix matrix = new Matrix(rows, columns);
+        fillMatrix(matrix);
+        Matrix transposedMatrix = matrix.transpose();
+        for (int i = 0;i < matrix.rows;i++) {
+            for (int j= 0;j < matrix.columns;j++) {
+                Assert.assertEquals(matrix.values[i][j], transposedMatrix.values[j][i], EPS);
             }
         }
-        //printMatrix(matrixResult);
-        //System.out.println("-----");
-        Assert.assertTrue(equalsMatrix(matrixLeft, matrixLeft));
-        Assert.assertTrue(equalsMatrix(matrixRight, matrixRight));
-        Assert.assertTrue(equalsMatrix(matrixResult, matrixResult));
-        Assert.assertFalse(equalsMatrix(matrixResult, matrixLeft));
-        System.out.println("Setup tests done");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNegativeRows() {
+        Matrix negativeRows = new Matrix(-100, 100);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNegativeColumns() {
+        Matrix negativeRows = new Matrix(100, -100);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNegativeRowsAndColumns() {
+        Matrix negativeRows = new Matrix(-100, -100);
     }
 
     @Test
     public void TestAlgorithm3() throws InterruptedException {
         System.out.println("Test 3");
-        //printMatrix(matrixLeft);
-        //System.out.println("-----");
-        //printMatrix(matrixRight);
-        //System.out.println("-----");
         Matrix r = matrixRight.transpose();
         Matrix c = new Matrix(matrixLeft.rows, matrixRight.columns);
         Semaphore semaphore = new Semaphore(/*matrixLeft.rows*/0, false);
+        long time = System.nanoTime();
         for (int i = 0; i < matrixLeft.rows; i++) {
             threadPoolExecutor.execute(new MatrixWorker(i, matrixLeft, r, c, semaphore));
         }
-        //System.out.println("semaphore.acquire()");
         for (int i = 0; i < matrixLeft.rows; i++) {
             semaphore.acquire();
         }
-        //System.out.println("semaphore.acquire() done");
-        //printMatrix(c);
-        System.out.println("-----");
-        Assert.assertTrue(equalsMatrix(matrixResult, c));
+        timeForAlgorithm3 = System.nanoTime() - time;
+        Assert.assertEquals(matrixResult, c);
         System.out.println("Test 3 done");
+        System.out.println("speed single threaded:" + (timeForSingleThread / 1000 / 1000));
+        System.out.println("speed multi threaded:" + (timeForAlgorithm3 / 1000 / 1000));
+        System.out.println("speedup ms:" + (timeForSingleThread - timeForAlgorithm3) / 1000/*mikrosekunden*/ / 1000/*millisekunden*/);
     }
 
-    private double vectorMultiplication(double[] vector1, double[] vector2) {
-        int length = vector1.length;
-        double result = 0;
-        for (int i = 0; i < length; i++) {
-            result += vector1[i] * vector2[i];
-        }
-        return result;
-    }
-
-    private void fillMatrix(Matrix matrix) {
+    private static void fillMatrix(Matrix matrix) {
         Random random = new Random();
         for (int i = 0; i < matrix.rows; i++) {
             for (int j = 0; j < matrix.columns; j++) {
                 matrix.values[i][j] = random.nextInt() % 15;
             }
         }
-    }
-
-    private void printMatrix(Matrix matrix) {
-        for (int i = 0; i < matrix.rows; i++) {
-            for (int j = 0; j < matrix.columns; j++) {
-                System.out.print(matrix.values[i][j] + ",");
-            }
-            System.out.println("");
-        }
-    }
-
-    private boolean equalsMatrix(Matrix matrixOne, Matrix matrixTwo) {
-        if (matrixOne.rows != matrixTwo.rows) return false;
-        if (matrixOne.columns != matrixTwo.columns) return false;
-        for (int i = 0; i < matrixOne.rows; i++) {
-            for (int j = 0; j < matrixOne.columns; j++) {
-                if (matrixOne.values[i][j] != matrixTwo.values[i][j]) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }
