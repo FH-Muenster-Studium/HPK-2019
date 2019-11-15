@@ -124,6 +124,18 @@ public class MatrixTest {
         Matrix negativeRows = new Matrix(-100, -100);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void TestMultiplyNotAllowed() {
+        Random random = new Random();
+        int firstRows = Math.abs(random.nextInt() % 1000);
+        int firstColumns = Math.abs(random.nextInt() % 1000);
+        int secondRows = firstRows + 1;
+        int secondColumns = Math.abs(random.nextInt() % 1000);
+        Matrix matrix = new Matrix(firstRows, firstColumns);
+        Matrix matrixTwo = new Matrix(secondRows, secondColumns);
+        matrix.multiply(matrixTwo);
+    }
+
     @Test
     public void TestAlgorithm3() throws InterruptedException {
         System.out.println("Test 3");

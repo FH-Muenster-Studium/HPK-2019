@@ -32,6 +32,9 @@ public class Matrix {
 
 
     public Matrix multiply(Matrix matrix) {
+        if (this.columns != matrix.rows) {
+            throw new IllegalArgumentException("Columns of matrix aren't equal to rows of matrix to multiply with");
+        }
         Matrix matrixResult = new Matrix(this.rows, matrix.columns);
         for (int i = 0; i < this.rows; i++) {
             for (int k = 0; k < this.columns; k++) {
