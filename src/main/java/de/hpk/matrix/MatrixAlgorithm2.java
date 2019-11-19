@@ -6,7 +6,7 @@ import java.util.concurrent.Semaphore;
 
 public class MatrixAlgorithm2 implements IMatrixAlgorithm {
 
-    private final Executor threadPoolExecutor = Executors.newFixedThreadPool(8);
+    private final Executor threadPoolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     public Matrix multiply(Matrix a, Matrix b) {
         Matrix c = new Matrix(a.rows, b.columns);
