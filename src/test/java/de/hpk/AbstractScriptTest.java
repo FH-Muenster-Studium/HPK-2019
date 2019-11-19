@@ -442,6 +442,12 @@ public abstract class AbstractScriptTest {
         assertEquals( 29.99998, script.parse(task), EPS);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public final void testTinyMinus6() throws Exception {
+        String task = "-2.0e-5 - -3.0e+1--";
+        assertEquals( 29.99998, script.parse(task), EPS);
+    }
+
     @Test
     public final void testConstant() throws Exception {
         String task = "0815; 4711;";

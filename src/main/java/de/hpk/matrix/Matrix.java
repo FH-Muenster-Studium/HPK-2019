@@ -36,13 +36,21 @@ public class Matrix {
             throw new IllegalArgumentException("Columns of matrix aren't equal to rows of matrix to multiply with");
         }
         Matrix matrixResult = new Matrix(this.rows, matrix.columns);
-        for (int i = 0; i < this.rows; i++) {
-            for (int k = 0; k < this.columns; k++) {
-                for (int j = 0; j < this.columns;/*matrixRight.rows*/ j++) {
-                    matrixResult.values[i][k] += this.values[i][j] * matrix.values[j][k];
+        int i, j, k, lengthI, lengthJ, lengthK;
+        for (i = 0, lengthI = this.rows; i < lengthI; i++) {
+            for (j = 0, lengthJ = matrix.columns; j < lengthJ; j++) {
+                for (k = 0, lengthK = this.columns; k < lengthK; k++) {
+                    matrixResult.values[i][j] += this.values[i][k] * matrix.values[k][j];
                 }
             }
         }
+        /*for (int i = 0; i < this.rows; i++) {
+            for (int k = 0; k < this.columns; k++) {
+                for (int j = 0; j < this.columns; j++) {matrixRight.rows
+                    matrixResult.values[i][k] += this.values[i][j] * matrix.values[j][k];
+                }
+            }
+        }*/
         return matrixResult;
     }
 

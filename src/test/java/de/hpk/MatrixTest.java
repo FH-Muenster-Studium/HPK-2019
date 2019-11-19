@@ -1,16 +1,12 @@
 package de.hpk;
 
 import de.hpk.matrix.Matrix;
-import de.hpk.matrix.MatrixWorker;
+import de.hpk.matrix.MatrixAlgorithm3;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Random;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
 
 public class MatrixTest {
 
@@ -21,29 +17,50 @@ public class MatrixTest {
 
     private static Matrix matrixResult;
 
+    private static Matrix[] matrixAValues = new Matrix[4];
+
+    private static Matrix[] matrixBValues = new Matrix[4];
+
+    private static Matrix[] matrixResults = new Matrix[4];
+
     private static long timeForSingleThread;
 
-    private static long timeForAlgorithm3;
+    private static final double EPS = 1.E-8;
 
-    protected static final double EPS = 1.E-8;
-
-    private static final Executor threadPoolExecutor = Executors.newFixedThreadPool(8);
+    private static long nsToMs(long time) {
+        return time / 1000/*mikrosekunden*/ / 1000/*millisekunden*/;
+    }
 
     @BeforeClass
     public static void setUp() {
         System.out.println("Setup tests");
-        matrixLeft = new Matrix(100, 100);
+        matrixLeft = new Matrix(164, 200);
         fillMatrix(matrixLeft);
-        matrixRight = new Matrix(100, 100);
+        matrixRight = new Matrix(200, 122);
         fillMatrix(matrixRight);
         long time = System.nanoTime();
         matrixResult = matrixLeft.multiply(matrixRight);
         timeForSingleThread = System.nanoTime() - time;
+        System.out.println("speed single threaded:" + (timeForSingleThread / 1000 / 1000));
         Assert.assertEquals(matrixLeft, matrixLeft);
         Assert.assertEquals(matrixRight, matrixRight);
         Assert.assertEquals(matrixResult, matrixResult);
         Assert.assertNotEquals(matrixResult, matrixRight);
         System.out.println("Setup tests done");
+
+        for (int i = 0, length = matrixResults.length; i < length; i++) {
+            int valueOne = (int) Math.pow(2, i + 1);
+            int valueTwo = (int) Math.pow(2, i + 2);
+            int valueThree = (int) Math.pow(2, i + 3);
+            System.out.println("multiply:" + valueOne + " x " + valueTwo + " with " + valueTwo + " x " + valueThree);
+            Matrix a = new Matrix(valueOne, valueTwo);
+            Matrix b = new Matrix(valueTwo, valueThree);
+            fillMatrix(a);
+            fillMatrix(b);
+            matrixAValues[i] = a;
+            matrixBValues[i] = b;
+            matrixResults[i] = a.multiply(b);
+        }
     }
 
     @Test
@@ -102,8 +119,8 @@ public class MatrixTest {
         Matrix matrix = new Matrix(rows, columns);
         fillMatrix(matrix);
         Matrix transposedMatrix = matrix.transpose();
-        for (int i = 0;i < matrix.rows;i++) {
-            for (int j= 0;j < matrix.columns;j++) {
+        for (int i = 0; i < matrix.rows; i++) {
+            for (int j = 0; j < matrix.columns; j++) {
                 Assert.assertEquals(matrix.values[i][j], transposedMatrix.values[j][i], EPS);
             }
         }
@@ -157,23 +174,41 @@ public class MatrixTest {
     @Test
     public void TestAlgorithm3() throws InterruptedException {
         System.out.println("Test 3");
-        Matrix r = matrixRight.transpose();
-        Matrix c = new Matrix(matrixLeft.rows, matrixRight.columns);
-        Semaphore semaphore = new Semaphore(/*matrixLeft.rows*/0, false);
         long time = System.nanoTime();
-        for (int i = 0; i < matrixLeft.rows; i++) {
-            threadPoolExecutor.execute(new MatrixWorker(i, matrixLeft, r, c, semaphore));
-        }
-        for (int i = 0; i < matrixLeft.rows; i++) {
-            semaphore.acquire();
-        }
-        timeForAlgorithm3 = System.nanoTime() - time;
+        Matrix c = MatrixAlgorithm3.multiply(matrixLeft, matrixRight);
+        long timeForAlgorithm3 = System.nanoTime() - time;
         Assert.assertEquals(matrixResult, c);
         System.out.println("Test 3 done");
-        System.out.println("speed single threaded:" + (timeForSingleThread / 1000 / 1000));
         System.out.println("speed multi threaded:" + (timeForAlgorithm3 / 1000 / 1000));
-        System.out.println("speedup ms:" + (timeForSingleThread - timeForAlgorithm3) / 1000/*mikrosekunden*/ / 1000/*millisekunden*/);
+        System.out.println("speedup ms:" + nsToMs(timeForSingleThread - timeForAlgorithm3));
+
+        for (int i = 0, length = matrixResults.length;i < length;i++) {
+            Assert.assertEquals(matrixResults[i], MatrixAlgorithm3.multiply(matrixAValues[i], matrixBValues[i]));
+        }
     }
+
+    /*@Test
+    public void TestAlgorithm1Serial() {
+        System.out.println("Test 1");
+        Matrix c = new Matrix(matrixLeft.rows, matrixRight.columns);
+        long time = System.nanoTime();
+
+        int i, j, k, lengthI, lengthJ, lengthK;
+        for (i = 0, lengthI = matrixLeft.rows; i < lengthI; i++) {
+            for (j = 0, lengthJ = matrixRight.columns; j < lengthJ; j++) {
+                for (k = 0, lengthK = matrixLeft.columns; k < lengthK; k++) {
+                    c.values[i][j] += matrixLeft.values[i][k] * matrixRight.values[k][j];
+                }
+            }
+        }
+
+        long timeForAlgorithm1 = System.nanoTime() - time;
+        Assert.assertEquals(matrixResult, c);
+        System.out.println("Test 1 done");
+        System.out.println("speed algorithm1:" + (timeForAlgorithm1 / 1000 / 1000));
+        System.out.println("speedup ms:" + nsToMs(timeForSingleThread - timeForAlgorithm1));
+    }*/
+
 
     private static void fillMatrix(Matrix matrix) {
         Random random = new Random();
