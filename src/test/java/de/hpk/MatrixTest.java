@@ -1,7 +1,9 @@
 package de.hpk;
 
+import de.hpk.matrix.IMatrixAlgorithm;
 import de.hpk.matrix.Matrix;
-import de.hpk.matrix.MatrixAlgorithm3;
+import de.hpk.matrix.MatrixAlgorithm2;
+import de.hpk.matrix.MatrixAlgorithm4;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,6 +25,8 @@ public class MatrixTest {
 
     private static Matrix[] matrixResults = new Matrix[4];
 
+    private static IMatrixAlgorithm[] matrixAlgorithms = new IMatrixAlgorithm[]{new MatrixAlgorithm2(), new MatrixAlgorithm4()};
+
     private static long timeForSingleThread;
 
     private static final double EPS = 1.E-8;
@@ -34,9 +38,10 @@ public class MatrixTest {
     @BeforeClass
     public static void setUp() {
         System.out.println("Setup tests");
-        matrixLeft = new Matrix(164, 200);
+        //matrixLeft = new Matrix(2048, 2048);
+        matrixLeft = new Matrix(1024, 1024);
         fillMatrix(matrixLeft);
-        matrixRight = new Matrix(200, 122);
+        matrixRight = new Matrix(1024, 1024);
         fillMatrix(matrixRight);
         long time = System.nanoTime();
         matrixResult = matrixLeft.multiply(matrixRight);
@@ -172,18 +177,31 @@ public class MatrixTest {
     }
 
     @Test
-    public void TestAlgorithm3() throws InterruptedException {
-        System.out.println("Test 3");
-        long time = System.nanoTime();
-        Matrix c = MatrixAlgorithm3.multiply(matrixLeft, matrixRight);
-        long timeForAlgorithm3 = System.nanoTime() - time;
-        Assert.assertEquals(matrixResult, c);
-        System.out.println("Test 3 done");
-        System.out.println("speed multi threaded:" + (timeForAlgorithm3 / 1000 / 1000));
-        System.out.println("speedup ms:" + nsToMs(timeForSingleThread - timeForAlgorithm3));
+    public void TestMultiplyRandomRowsColumns() {
+        Random random = new Random();
+        Matrix[] twoRandomMatrix = createTwoRandomMatrix(Math.abs(random.nextInt() % 100));
+        Matrix a = twoRandomMatrix[0];
+        Matrix b = twoRandomMatrix[1];
+        Matrix result = a.multiply(b);
+        testAlgorithms(a, b, result);
+    }
 
-        for (int i = 0, length = matrixResults.length;i < length;i++) {
-            Assert.assertEquals(matrixResults[i], MatrixAlgorithm3.multiply(matrixAValues[i], matrixBValues[i]));
+    @Test
+    public void TestAlgorithms() {
+        for (int i = 0, length = matrixAlgorithms.length; i < length; i++) {
+            IMatrixAlgorithm matrixAlgorithm = matrixAlgorithms[i];
+            long time = System.nanoTime();
+            Matrix c = matrixAlgorithm.multiply(matrixLeft, matrixRight);
+            long timeForAlgorithm = System.nanoTime() - time;
+            Assert.assertEquals(matrixResult, c);
+            System.out.println("Test" + matrixAlgorithm.getName());
+            System.out.println("n" + " | " + "seq ms" + " | " + "par ms" + " | " + "speedup");
+            System.out.println(matrixLeft.rows + " | " + nsToMs(timeForSingleThread) + " | " + nsToMs(timeForAlgorithm) + " | " + ((float) timeForSingleThread / (float) timeForAlgorithm) + "x");
+            System.out.println("----------");
+
+            for (int j = 0, lengthJ = matrixResults.length; j < lengthJ; j++) {
+                Assert.assertEquals(matrixResults[j], matrixAlgorithm.multiply(matrixAValues[j], matrixBValues[j]));
+            }
         }
     }
 
@@ -216,6 +234,29 @@ public class MatrixTest {
             for (int j = 0; j < matrix.columns; j++) {
                 matrix.values[i][j] = random.nextInt() % 15;
             }
+        }
+    }
+
+    private static Matrix[] createTwoRandomMatrix(int n) {
+        Matrix[] result = new Matrix[2];
+        Matrix a = new Matrix(n, n + 1);
+        fillMatrix(a);
+        Matrix b = new Matrix(n + 1, n);
+        fillMatrix(b);
+        result[0] = a;
+        result[1] = b;
+        return result;
+    }
+
+    private static void testAlgorithms(Matrix a, Matrix b, Matrix expected) {
+        for (int i = 0, length = matrixAlgorithms.length; i < length; i++) {
+            IMatrixAlgorithm matrixAlgorithm = matrixAlgorithms[i];
+            long time = System.nanoTime();
+            Matrix c = matrixAlgorithm.multiply(a, b);
+            long timeForAlgorithm = System.nanoTime() - time;
+            Assert.assertEquals(expected, c);
+            System.out.println("speed:" + matrixAlgorithm.getName() + " " + nsToMs(timeForAlgorithm) + "ms " + "(" + a.rows + "," + a.columns + ")*(" + b.rows + "," + b.columns + ")");
+            System.out.println("----------");
         }
     }
 }

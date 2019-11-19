@@ -2,7 +2,7 @@ package de.hpk.matrix;
 
 import java.util.concurrent.Semaphore;
 
-public class MatrixWorker implements Runnable {
+public class MatrixWorker4 implements Runnable {
 
     private final int row;
 
@@ -12,7 +12,7 @@ public class MatrixWorker implements Runnable {
 
     private final Semaphore semaphore;
 
-    public MatrixWorker(int row, Matrix left, Matrix right, Matrix r, Matrix result, Semaphore semaphore) {
+    public MatrixWorker4(int row, Matrix left, Matrix right, Matrix r, Matrix result, Semaphore semaphore) {
         this.row = row;
         this.left = left;
         this.right = right;
