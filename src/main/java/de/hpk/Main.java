@@ -9,16 +9,25 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.BitSet;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
         System.out.println("test");
-        WRBScript script = new WRBScript();
-        script.parse("6 E 7");
+        String javaLibPath = System.getProperty("java.library.path");
+        Map<String, String> envVars = System.getenv();
+        System.out.println(envVars.get("Path"));
+        System.out.println(javaLibPath);
+        System.out.println(new File("bla.txt").toPath().toAbsolutePath().toString());
+        System.load("/Users/fabianterhorst/Documents/GitHub/HPK-2019/target/libhpkNative.so");
+        System.out.println("done load");
+        //WRBScript script = new WRBScript();
+        //script.parse("6 E 7");
         //CharStream charStream = CharStreams.fromString("x=-42;x*7;5+7;7*7;12-17;12--17;8/-4;6*(7+3)");
         /*CharStream charStream = CharStreams.fromString("6 ?7");
         HPKLexer lexer = new HPKLexer(charStream);  //instantiate a lexer

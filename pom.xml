@@ -10,6 +10,8 @@
         <maven.compiler.target>10</maven.compiler.target>
         <antlr4.visitor>true</antlr4.visitor>
         <antlr4.listener>false</antlr4.listener>
+        <native.source.dir>src/main/c</native.source.dir>
+        <!--<java.library.path>target/</java.library.path>-->
     </properties>
 
     <groupId>de.hpk</groupId>
@@ -36,6 +38,27 @@
 
     <build>
         <plugins>
+            <!--
+
+            <p>&lt;plugin&gt;<br>
+&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;<br>
+&lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;<br>
+&lt;configuration&gt;<br>
+&lt;forkMode&gt;once&lt;/forkMode&gt;<br>
+&lt;workingDirectory&gt;target&lt;/workingDirectory&gt;<br>
+&lt;argLine&gt;-Djava.library.path=${basedir}/lib&lt;/argLine&gt;<br>
+&lt;/configuration&gt;<br>
+&lt;/plugin&gt;</p>
+            -->
+            <!--<plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <workingDirectory>target</workingDirectory>
+                    <argLine>-Djava.library.path=${basedir}/lib</argLine>
+                </configuration>
+            </plugin>-->
             <!--<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -58,9 +81,12 @@
                 <version>1.6.0</version>
                 <configuration>
                     <mainClass>de.hpk.Main</mainClass>
-                    <arguments>
+                    <!--<arguments>
                         <argument>arg0</argument>
                         <argument>arg1</argument>
+                    </arguments>-->
+                    <arguments>
+                        <argument>-Djava.library.path=target</argument>
                     </arguments>
                 </configuration>
                 <executions>
@@ -135,6 +161,71 @@
                     <execution>
                         <goals>
                             <goal>antlr4</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>1.0-alpha-9</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <!--<environmentVariables>
+                        <DYLD_LIBRARY_PATH>${project.build.directory}</DYLD_LIBRARY_PATH>
+                    </environmentVariables>-->
+
+                    <javahOS>linux</javahOS><!--linux-->
+
+                    <!-- deploy the accompany .lib file as well -->
+                    <!--<linkerSecondaryOutputExtensions>lib</linkerSecondaryOutputExtensions>-->
+
+                    <jdkIncludePath>${java.home}/include</jdkIncludePath>
+                    <compilerProvider>generic-classic</compilerProvider>
+                    <compilerExecutable>gcc</compilerExecutable>
+                    <linkerExecutable>gcc</linkerExecutable>
+                    <compilerStartOptions>
+                        <compilerStartOption>-fPIC</compilerStartOption>
+                    </compilerStartOptions>
+                    <linkerStartOptions>
+                        <linkerStartOption>-shared target/objs/differentiator.o</linkerStartOption><!--target/objs/function.o target/objs/differentiator.o-->
+                    </linkerStartOptions>
+                    <linkerFinalName>libhpkNative</linkerFinalName>
+                    <linkerFinalNameExt>so</linkerFinalNameExt>
+                    <classifier>jnilib-linux64</classifier>
+                    <sources>
+                        <source>
+                            <directory>src/main/c/de/hpk</directory>
+                            <includes>
+                                <include>**/*.h</include>
+                                <include>**/*.hpp</include>
+                                <include>**/*.c</include>
+                                <include>**/*.cpp</include>
+                            </includes>
+                        </source>
+                    </sources>
+                    <!--<linkerFinalName>hpk</linkerFinalName>-->
+                    <javahClassNames>
+                        <javahClassName>de.hpk.Differentiator</javahClassName>
+                    </javahClassNames>
+                    <!--<javahSearchJNIFromDependencies>true</javahSearchJNIFromDependencies>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>javah</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <javahProvider>default</javahProvider>
+                            <javahOutputDirectory>${project.build.directory}/custom-javah</javahOutputDirectory>
+                            <workingDirectory>${basedir}</workingDirectory>
+                            <javahOutputFileName>Differentiator.h</javahOutputFileName>
+                            <javahClassNames>
+                                <javahClassName>de.hpk.Differentiator</javahClassName>
+                            </javahClassNames>
+                        </configuration>
+                        <goals>
+                            <goal>javah</goal>
                         </goals>
                     </execution>
                 </executions>
