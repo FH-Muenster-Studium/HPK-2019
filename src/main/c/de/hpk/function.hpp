@@ -1,5 +1,8 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
+
+void bla();
+
 #include <assert.h>
 /**
 * Declaration for a real valued C function−pointer, mapping

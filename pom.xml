@@ -198,7 +198,7 @@
                         <compilerStartOption>-fPIC</compilerStartOption>
                     </compilerStartOptions>
                     <linkerStartOptions>
-                        <linkerStartOption>-shared target/objs/differentiator.o</linkerStartOption><!--target/objs/function.o target/objs/differentiator.o-->
+                        <linkerStartOption>-shared</linkerStartOption><!--target/objs/function.o target/objs/differentiator.o-->
                     </linkerStartOptions>
                     <linkerFinalName>libhpkNative</linkerFinalName>
                     <linkerFinalNameExt>so</linkerFinalNameExt>
@@ -238,6 +238,29 @@
                         </goals>
                     </execution>
                 </executions>-->
+                <executions>
+                    <execution>
+                        <id>native-compile</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>javah-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>javah</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>javah-compile-link</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>link</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
