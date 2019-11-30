@@ -79,14 +79,22 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
-                <configuration>
+                <!--<configuration>
+                    <environmentVariables>
+                        <DYLD_LIBRARY_PATH>${project.build.directory}</DYLD_LIBRARY_PATH>
+                    </environmentVariables>
                     <mainClass>de.hpk.Main</mainClass>
-                    <!--<arguments>
-                        <argument>arg0</argument>
-                        <argument>arg1</argument>
-                    </arguments>-->
                     <arguments>
                         <argument>-Djava.library.path=target</argument>
+                    </arguments>
+                </configuration>-->
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-Djava.library.path=${project.build.directory}</argument>
+                        <argument>-classpath</argument>
+                        <classpath />
+                        <argument>de.hpk.Main</argument>
                     </arguments>
                 </configuration>
                 <executions>
@@ -193,7 +201,7 @@
                     </linkerStartOptions>
                     <linkerFinalName>libhpkNative</linkerFinalName>
                     <linkerFinalNameExt>so</linkerFinalNameExt>
-                    <classifier>jnilib-linux64</classifier>
+                    <!--<classifier>jnilib-linux64</classifier>-->
                     <sources>
                         <source>
                             <directory>src/main/c/de/hpk</directory>

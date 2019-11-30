@@ -18,13 +18,8 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        System.out.println("test");
-        String javaLibPath = System.getProperty("java.library.path");
-        Map<String, String> envVars = System.getenv();
-        System.out.println(envVars.get("Path"));
-        System.out.println(javaLibPath);
-        System.out.println(new File("bla.txt").toPath().toAbsolutePath().toString());
-        System.load("/Users/fabianterhorst/Documents/GitHub/HPK-2019/target/libhpkNative.so");
+        System.load(System.getProperty("java.library.path") + "/libhpkNative.so");
+        //System.loadLibrary("hpkNative");
         System.out.println("done load");
         //WRBScript script = new WRBScript();
         //script.parse("6 E 7");
