@@ -90,6 +90,7 @@
                 </configuration>-->
                 <configuration>
                     <executable>java</executable>
+                    <!--<mainClass>de.hpk.Main</mainClass>-->
                     <arguments>
                         <argument>-Djava.library.path=${project.build.directory}</argument>
                         <argument>-classpath</argument>
@@ -97,14 +98,14 @@
                         <argument>de.hpk.Main</argument>
                     </arguments>
                 </configuration>
-                <executions>
+                <!--<executions>
                     <execution>
                         <phase>test</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
                     </execution>
-                </executions>
+                </executions>-->
             </plugin>
             <!--<plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -219,7 +220,7 @@
                     </javahClassNames>
                     <!--<javahSearchJNIFromDependencies>true</javahSearchJNIFromDependencies>-->
                 </configuration>
-                <executions>
+                <!--<executions>
                     <execution>
                         <id>javah</id>
                         <phase>generate-sources</phase>
@@ -236,7 +237,7 @@
                             <goal>javah</goal>
                         </goals>
                     </execution>
-                </executions>
+                </executions>-->
             </plugin>
         </plugins>
     </build>
