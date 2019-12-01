@@ -14,7 +14,7 @@ jobs:
       with:
         java-version: 1.8
     - name: Maven install
-      run: find /usr/lib/jvm/ | grep jni.h && mvn install
+      run: echo $JAVA_HOME_8_x64 && echo $JAVA_HOME_8_X64 &&  find /usr/lib/jvm/ | grep jni.h && mvn install
     - name: Maven compile
       run: mvn compile
     - name: Maven test
