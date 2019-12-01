@@ -191,11 +191,12 @@
                     <!--<linkerSecondaryOutputExtensions>lib</linkerSecondaryOutputExtensions>-->
 
                     <jdkIncludePath>${java.home}/include</jdkIncludePath>
+                    <javahOutputDirectory>${project.build.directory}/../src/main/c/de/hpk/include</javahOutputDirectory>
                     <compilerProvider>generic-classic</compilerProvider>
                     <compilerExecutable>g++</compilerExecutable>
                     <linkerExecutable>g++</linkerExecutable>
                     <compilerStartOptions>
-                        <compilerStartOption>-fPIC -std=c++11</compilerStartOption>
+                        <compilerStartOption>-fPIC -std=c++11 -I ${env.JAVA_HOME}/include -I ${env.JAVA_HOME}/include/darwin</compilerStartOption>
                     </compilerStartOptions>
                     <linkerStartOptions>
                         <linkerStartOption>-shared</linkerStartOption><!--target/objs/function.o target/objs/differentiator.o-->

@@ -1,10 +1,22 @@
 #include "function.hpp"
 #include "NoConvergenceException.h"
 #include <cmath>
+#include "include/de_hpk_Differentiator.h"
+#include <jni.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*
+ * Class:     de_hpk_Differentiator
+ * Method:    test
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_de_hpk_Differentiator_test
+(JNIEnv *, jobject) {
+    
+}
 
 double delta(Function &f, double x, double h) {
     return f(x + h) - f(x - h);
