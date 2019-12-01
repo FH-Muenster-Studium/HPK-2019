@@ -7,8 +7,6 @@
 extern "C" {
 #endif
 
-#define ABS(i) ((i)>0 ? (i): -(i))
-
 double integrate(Function &f, double a, double b, double eps) {
     if (a == b)
         return 0.0;
@@ -49,12 +47,12 @@ double integrate(Function &f, double a, double b, double eps) {
         result *= h / 3;
 
         N *= 2;
-        tempAbsoluteEps = ABS(result - last_result);
+        tempAbsoluteEps = abs(result - last_result);
 
         if (!firstrun && tempAbsoluteEps > lasteps)
             throw NoConvergenceException();    //im ersten durchlauf noch kein lasteps
         firstrun = false;
-    } while (tempAbsoluteEps > eps && (ABS(result / last_result - 1.0)) > eps && reps--);
+    } while (tempAbsoluteEps > eps && (abs(result / last_result - 1.0)) > eps && reps--);
 
     if (reps == -1) throw NoConvergenceException();
     if (std::isnan(tempAbsoluteEps)) throw NoConvergenceException();

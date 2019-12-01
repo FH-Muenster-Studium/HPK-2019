@@ -192,10 +192,10 @@
 
                     <jdkIncludePath>${java.home}/include</jdkIncludePath>
                     <compilerProvider>generic-classic</compilerProvider>
-                    <compilerExecutable>gcc</compilerExecutable>
-                    <linkerExecutable>gcc</linkerExecutable>
+                    <compilerExecutable>g++</compilerExecutable>
+                    <linkerExecutable>g++</linkerExecutable>
                     <compilerStartOptions>
-                        <compilerStartOption>-fPIC</compilerStartOption>
+                        <compilerStartOption>-fPIC -std=c++11</compilerStartOption>
                     </compilerStartOptions>
                     <linkerStartOptions>
                         <linkerStartOption>-shared</linkerStartOption><!--target/objs/function.o target/objs/differentiator.o-->
@@ -209,8 +209,10 @@
                             <includes>
                                 <!--<include>**/*.h</include>
                                 <include>**/*.hpp</include>-->
-                                <include>**/*.c</include>
-                                <include>**/*.cpp</include>
+                                <!--<include>**/*.c</include>
+                                <include>**/*.cpp</include>-->
+                                <include>*.c</include>
+                                <include>*.cpp</include>
                             </includes>
                         </source>
                     </sources>
