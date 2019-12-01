@@ -196,7 +196,7 @@
                     <compilerExecutable>g++</compilerExecutable>
                     <linkerExecutable>g++</linkerExecutable>
                     <compilerStartOptions>
-                        <compilerStartOption>-fPIC -std=c++11 -I ${env.JAVA_HOME}/include -I ${env.JAVA_HOME}/include/darwin</compilerStartOption>
+                        <compilerStartOption>-fPIC -std=c++11 -I ${env.JAVA_HOME}/include -I ${env.JAVA_HOME}/include/darwin -I ${env.JAVA_HOME_8_x64}/include</compilerStartOption>
                     </compilerStartOptions>
                     <linkerStartOptions>
                         <linkerStartOption>-shared</linkerStartOption><!--target/objs/function.o target/objs/differentiator.o-->
