@@ -106,13 +106,12 @@ public class IntegratorTest {
         return Math.exp(x) * Math.sin(x);
     }
 
-    /*@Test
+    @Test
     public final void expXsinXTest() {
         double a = -Math.PI, b = Math.PI;
         double result = integrator.integrate(args -> expXsinX(args[0]), a, b, eps);
         double expected = Math.sinh(Math.PI);
 
-        Assert.assertEquals(result, expected, eps);
-    }*/
+        Assert.assertEquals(result, expected, 1e-5);
+    }
 }
-
