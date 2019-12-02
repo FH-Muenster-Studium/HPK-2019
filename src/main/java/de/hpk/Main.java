@@ -21,6 +21,9 @@ public class Main {
         System.load(System.getProperty("java.library.path") + "/libhpkNative.so");
         //System.loadLibrary("hpkNative");
         System.out.println("done load");
+        Differentiator differentiator = new Differentiator();
+        Integrator integrator = new Integrator();
+        //differentiator.test();
         //WRBScript script = new WRBScript();
         //script.parse("6 E 7");
         //CharStream charStream = CharStreams.fromString("x=-42;x*7;5+7;7*7;12-17;12--17;8/-4;6*(7+3)");

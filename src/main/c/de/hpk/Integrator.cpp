@@ -1,6 +1,6 @@
-#include "integrator.h"
+#include "Integrator.h"
 #include <cmath>
-#include "function.hpp"
+#include "Function.h"
 #include "NoConvergenceException.h"
 
 #ifdef __cplusplus

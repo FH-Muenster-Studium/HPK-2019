@@ -9,11 +9,11 @@ extern "C" {
 #endif
 /*
  * Class:     de_hpk_Differentiator
- * Method:    test
- * Signature: ()V
+ * Method:    differentiate
+ * Signature: (Lde/lab4inf/wrb/Function;DD)D
  */
-JNIEXPORT void JNICALL Java_de_hpk_Differentiator_test
-  (JNIEnv *, jobject);
+JNIEXPORT jdouble JNICALL Java_de_hpk_Differentiator_differentiate
+  (JNIEnv *, jobject, jobject, jdouble, jdouble);
 
 #ifdef __cplusplus
 }

@@ -39,9 +39,9 @@ public class MatrixTest {
     public static void setUp() {
         System.out.println("Setup tests");
         //matrixLeft = new Matrix(2048, 2048);
-        matrixLeft = new Matrix(1024, 1024);
+        matrixLeft = new Matrix(128, 128);
         fillMatrix(matrixLeft);
-        matrixRight = new Matrix(1024, 1024);
+        matrixRight = new Matrix(128, 128);
         fillMatrix(matrixRight);
         long time = System.nanoTime();
         matrixResult = matrixLeft.multiply(matrixRight);
@@ -107,8 +107,8 @@ public class MatrixTest {
     @Test
     public void testTransposeRowAndColumnsCount() {
         Random random = new Random();
-        int rows = Math.abs(random.nextInt() % 1000);
-        int columns = Math.abs(random.nextInt() % 1000);
+        int rows = Math.abs((random.nextInt() % 1000) + 1);
+        int columns = Math.abs((random.nextInt() % 1000) + 1);
         Matrix matrix = new Matrix(rows, columns);
         fillMatrix(matrix);
         Matrix transposedMatrix = matrix.transpose();

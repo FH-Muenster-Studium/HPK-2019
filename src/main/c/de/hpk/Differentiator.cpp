@@ -1,8 +1,6 @@
-#include "function.hpp"
-#include "NoConvergenceException.h"
-#include <cmath>
-#include "include/de_hpk_Differentiator.h"
-#include <jni.h>
+#include "Differentiator.h"
+
+#include <iostream>
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,8 +12,8 @@ extern "C" {
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_de_hpk_Differentiator_test
-(JNIEnv *, jobject) {
-    
+(JNIEnv *env, jobject obj) {
+    std::cout << "test" << std::endl;
 }
 
 double delta(Function &f, double x, double h) {
