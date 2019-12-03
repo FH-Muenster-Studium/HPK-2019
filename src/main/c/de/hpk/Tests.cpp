@@ -151,7 +151,7 @@ extern int Integrate_noconvergenceTest(int, char**) {
     Function function = Function(noconvergence, "noconvergence");
     try {
         integrate(function, a, b, EPS);
-    } catch (NoConvergenceException& exception) {
+    } catch (NoConvergenceException &exception) {
         assertEqualsS(exception.what(), "no convergence");
         return 0;
     }
@@ -258,6 +258,61 @@ extern int Differentiate_expXsinXTest(int, char**) {
     return 0;
 }
 
+int fCounts[3];
+
+void TestFunction(Function* function, double values[], int count, int index) {
+    printf("\nTesting function %s\n", function->name());
+    printf("    X     %s      f'(x)      F(x)       #f'      #int\n", function->name());
+    printf("-------------------------------------------------------\n");
+    for (int i = 0; i < count; i++) {
+        double result = (*function)(values[i]);
+        fCounts[index] = 0;
+        double diffResult = differentiate(*function, values[i], EPS1);
+        int diffCount = fCounts[index];
+        fCounts[index] = 0;
+        double intResult = integrate(*function, 0, values[i], EPS1);
+        int intCount = fCounts[index];
+        printf("       %lf            %.7lf          %.7lf         %.7lf       %d      %d      \n", values[i], result,
+               diffResult, intResult, diffCount, intCount);
+    }
+}
+
+double f1(double x) {
+    fCounts[0] = fCounts[0] + 1;
+    return x * x;
+}
+
+double f2(double x) {
+    fCounts[1] = fCounts[1] + 1;
+    return x*x*x;
+}
+
+double f3(double x) {
+    fCounts[2] = fCounts[2] + 1;
+    return sin(x);
+}
+
+double f4(double x) {
+    fCounts[3] = fCounts[3] + 1;
+    return tan(x);
+}
+
+extern int PrintTest(int, char**) {
+    Function function = Function(f1, "f(x) = x^2(x)");
+    double values[] = {0, 0.25, 0.50, 0.75, 1.0};
+    TestFunction(&function, values, 5, 0);
+    Function function2 = Function(f2, "f(x) = x^3(x)");
+    double values2[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    TestFunction(&function2, values2, 11, 1);
+    Function function3 = Function(f3, "f(x) = sin(x)");
+    double values3[] = {0, M_PI/10, M_PI/9, M_PI/8, M_PI/7, M_PI/6, M_PI/5, M_PI/4, M_PI/3, M_PI/2, M_PI};
+    TestFunction(&function3, values3, 11, 2);
+    Function function4 = Function(f4, "f(x) = tan(x)");
+    double values4[] = {0, 0.1963, 0.3927, 0.5890, 0.7854};
+    TestFunction(&function4, values4, 5, 3);
+    return 0;
+}
+
 DECLARE_TEST(Integrate_Linear)
 
 DECLARE_TEST(Integrate_Sinus1)
@@ -294,6 +349,8 @@ DECLARE_TEST(Differentiate_xcosx)
 
 DECLARE_TEST(Differentiate_expXsinX)
 
+DECLARE_TEST(Print)
+
 BEG_SUITE(suite)
                 ADD_TEST(Integrate_Linear),
                 ADD_TEST(Integrate_Sinus1),
@@ -313,7 +370,7 @@ BEG_SUITE(suite)
                 ADD_TEST(Differentiate_Polynominal),
                 ADD_TEST(Differentiate_ln),
                 ADD_TEST(Differentiate_xcosx),
-                ADD_TEST(Differentiate_expXsinX)
-END_SUITE(suite)
+                ADD_TEST(Differentiate_expXsinX),
+                ADD_TEST(Print)END_SUITE(suite)
 
 RUN_SUITE(suite)
