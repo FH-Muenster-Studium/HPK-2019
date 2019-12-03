@@ -2,19 +2,11 @@
 
 #include <iostream>
 
+#define ABSOLUTE(i) ((i) > 0 ? (i) : -(i))
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/*
- * Class:     de_hpk_Differentiator
- * Method:    test
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_de_hpk_Differentiator_test
-(JNIEnv *env, jobject obj) {
-    std::cout << "test" << std::endl;
-}
 
 double delta(Function &f, double x, double h) {
     return f(x + h) - f(x - h);
@@ -36,9 +28,9 @@ double differentiate(Function &f, double x, double eps) {
 
         result = (16 * result - last_result) / 15;
         h /= 2;
-        AbsoluteFault = abs(result - last_result);
+        AbsoluteFault = ABSOLUTE(result - last_result);
 
-    } while (AbsoluteFault > eps && (abs(result / last_result - 1.0)) > eps && reps--);
+    } while (AbsoluteFault > eps && (ABSOLUTE(result / last_result - 1.0)) > eps && reps--);
 
     if (reps == -1) throw NoConvergenceException();
     return result;

@@ -38,18 +38,6 @@
 
     <build>
         <plugins>
-            <!--
-
-            <p>&lt;plugin&gt;<br>
-&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;<br>
-&lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;<br>
-&lt;configuration&gt;<br>
-&lt;forkMode&gt;once&lt;/forkMode&gt;<br>
-&lt;workingDirectory&gt;target&lt;/workingDirectory&gt;<br>
-&lt;argLine&gt;-Djava.library.path=${basedir}/lib&lt;/argLine&gt;<br>
-&lt;/configuration&gt;<br>
-&lt;/plugin&gt;</p>
-            -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
@@ -63,35 +51,10 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-            <!--<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <configuration>
-                    <mainClass>de.hpk.Main</mainClass>
-                    <executable>java</executable>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
-                <!--<configuration>
-                    <environmentVariables>
-                        <DYLD_LIBRARY_PATH>${project.build.directory}</DYLD_LIBRARY_PATH>
-                    </environmentVariables>
-                    <mainClass>de.hpk.Main</mainClass>
-                    <arguments>
-                        <argument>-Djava.library.path=target</argument>
-                    </arguments>
-                </configuration>-->
                 <configuration>
                     <executable>java</executable>
                     <!--<mainClass>de.hpk.Main</mainClass>-->
@@ -102,49 +65,7 @@
                         <argument>de.hpk.Main</argument>
                     </arguments>
                 </configuration>
-                <!--<executions>
-                    <execution>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>-->
             </plugin>
-            <!--<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>de.hpk.Main</mainClass>
-                </configuration>
-            </plugin>-->
-            <!--<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/main/generated-sources/</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -152,11 +73,6 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <!--<showWarnings>true</showWarnings>
-                    <showDeprecation>true</showDeprecation>
-                    <compilerArguments>
-                        <Xlint/>
-                    </compilerArguments>-->
                 </configuration>
             </plugin>
             <plugin>
@@ -166,8 +82,6 @@
                 <configuration>
                     <visitor>true</visitor>
                     <listener>false</listener>
-                    <!--<outputDirectory>target/generated-sources/antlr4/</outputDirectory>-->
-                    <!--<sourceDirectory>src/main/antlr4</sourceDirectory>-->
                     <outputDirectory>src/main/generated-sources/</outputDirectory>
                 </configuration>
                 <executions>
@@ -185,15 +99,7 @@
                 <version>1.0-alpha-9</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <!--<environmentVariables>
-                        <DYLD_LIBRARY_PATH>${project.build.directory}</DYLD_LIBRARY_PATH>
-                    </environmentVariables>-->
-
-                    <javahOS>linux</javahOS><!--linux-->
-
-                    <!-- deploy the accompany .lib file as well -->
-                    <!--<linkerSecondaryOutputExtensions>lib</linkerSecondaryOutputExtensions>-->
-
+                    <javahOS>linux</javahOS>
                     <jdkIncludePath>${java.home}/include</jdkIncludePath>
                     <javahOutputDirectory>${project.build.directory}/../src/main/c/de/hpk/include</javahOutputDirectory>
                     <compilerProvider>generic-classic</compilerProvider>
@@ -203,49 +109,24 @@
                         <compilerStartOption>-fPIC -std=c++11 -I ${env.JAVA_HOME}/include -I ${env.JAVA_HOME}/include/linux -I ${env.JAVA_HOME}/include/darwin -I ${env.JAVA_HOME_8_X64}/include -I ${env.JAVA_HOME_8_X64}/include/linux</compilerStartOption>
                     </compilerStartOptions>
                     <linkerStartOptions>
-                        <linkerStartOption>-shared</linkerStartOption><!--target/objs/function.o target/objs/differentiator.o-->
+                        <linkerStartOption>-shared</linkerStartOption>
                     </linkerStartOptions>
                     <linkerFinalName>libhpkNative</linkerFinalName>
                     <linkerFinalNameExt>so</linkerFinalNameExt>
-                    <!--<classifier>jnilib-linux64</classifier>-->
                     <sources>
                         <source>
                             <directory>src/main/c/de/hpk</directory>
                             <includes>
-                                <!--<include>**/*.h</include>
-                                <include>**/*.hpp</include>-->
-                                <!--<include>**/*.c</include>
-                                <include>**/*.cpp</include>-->
                                 <include>*.c</include>
                                 <include>*.cpp</include>
                             </includes>
                         </source>
                     </sources>
-                    <!--<linkerFinalName>hpk</linkerFinalName>-->
                     <javahClassNames>
                         <javahClassName>de.hpk.Differentiator</javahClassName>
                         <javahClassName>de.hpk.Integrator</javahClassName>
                     </javahClassNames>
-                    <!--<javahSearchJNIFromDependencies>true</javahSearchJNIFromDependencies>-->
                 </configuration>
-                <!--<executions>
-                    <execution>
-                        <id>javah</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <javahProvider>default</javahProvider>
-                            <javahOutputDirectory>${project.build.directory}/custom-javah</javahOutputDirectory>
-                            <workingDirectory>${basedir}</workingDirectory>
-                            <javahOutputFileName>Differentiator.h</javahOutputFileName>
-                            <javahClassNames>
-                                <javahClassName>de.hpk.Differentiator</javahClassName>
-                            </javahClassNames>
-                        </configuration>
-                        <goals>
-                            <goal>javah</goal>
-                        </goals>
-                    </execution>
-                </executions>-->
                 <executions>
                     <execution>
                         <id>native-compile</id>
@@ -270,6 +151,44 @@
                     </execution>
                 </executions>
             </plugin>
+
+
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>1.0-alpha-9</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <jdkIncludePath>${java.home}/include</jdkIncludePath>
+                    <compilerProvider>generic-classic</compilerProvider>
+                    <compilerExecutable>g++</compilerExecutable>
+                    <compilerStartOptions>
+                        <compilerStartOption>-I ${env.JAVA_HOME}/include -I ${env.JAVA_HOME}/include/linux -I ${env.JAVA_HOME}/include/darwin -I ${env.JAVA_HOME_8_X64}/include -I ${env.JAVA_HOME_8_X64}/include/linux -o executable</compilerStartOption>
+                    </compilerStartOptions>
+                    <sources>
+                        <source>
+                            <directory>src/main/c/de/hpk</directory>
+                            <includes>
+                                <include>*.c</include>
+                                <include>*.cpp</include>
+                            </includes>
+                        </source>
+                    </sources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>native-compile</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+
         </plugins>
     </build>
 

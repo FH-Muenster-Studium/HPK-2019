@@ -3,6 +3,8 @@
 #include "Function.h"
 #include "NoConvergenceException.h"
 
+#define ABSOLUTE(i) ((i) > 0 ? (i) : -(i))
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -47,12 +49,12 @@ double integrate(Function &f, double a, double b, double eps) {
         result *= h / 3;
 
         N *= 2;
-        tempAbsoluteEps = abs(result - last_result);
+        tempAbsoluteEps = ABSOLUTE(result - last_result);
 
         if (!firstrun && tempAbsoluteEps > lasteps)
             throw NoConvergenceException();    //im ersten durchlauf noch kein lasteps
         firstrun = false;
-    } while (tempAbsoluteEps > eps && (abs(result / last_result - 1.0)) > eps && reps--);
+    } while (tempAbsoluteEps > eps && (ABSOLUTE(result / last_result - 1.0)) > eps && reps--);
 
     if (reps == -1) throw NoConvergenceException();
     if (std::isnan(tempAbsoluteEps)) throw NoConvergenceException();
