@@ -297,6 +297,11 @@ double f4(double x) {
     return tan(x);
 }
 
+double f5(double x) {
+    fCounts[4] = fCounts[4] + 1;
+    return cos(x);
+}
+
 extern int PrintTest(int, char**) {
     Function function = Function(f1, "f(x) = x^2(x)");
     double values[] = {0, 0.25, 0.50, 0.75, 1.0};
@@ -310,6 +315,9 @@ extern int PrintTest(int, char**) {
     Function function4 = Function(f4, "f(x) = tan(x)");
     double values4[] = {0, 0.1963, 0.3927, 0.5890, 0.7854};
     TestFunction(&function4, values4, 5, 3);
+    Function function5 = Function(f5, "f(x) = cos(x)");
+    double values5[] = {0, 0.25, 0.50, 0.75, 1.0};
+    TestFunction(&function5, values5, 5, 4);
     return 0;
 }
 
