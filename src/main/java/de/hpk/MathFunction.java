@@ -33,9 +33,11 @@ public class MathFunction implements Function {
         for (int i = 0, length = args.length; i < length; i++) {
             this.variableRepository.setVariable(this.parameterNames[i], args[i]);
         }
+
+        VariableRepository variableRepositoryOld = this.mathVisitor.getVariableRepository();
         this.mathVisitor.setVariableRepository(variableRepository);
         double result = this.mathVisitor.visit(functionDefinitionContext.expression());
-        this.mathVisitor.setVariableRepository(variableRepository.getParent());
+        this.mathVisitor.setVariableRepository(variableRepositoryOld);
         return result;
     }
 }

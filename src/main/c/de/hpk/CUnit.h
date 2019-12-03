@@ -213,7 +213,7 @@ extern int fatalCount();
 #define assertEqualsF(x,y,delta) {                 \
 	if(CUNIT_ABS((x)-(y))>delta) {                 \
 		char _test_buf[BUFSIZE];                   \
-		sprintf(_test_buf,"ERROR %s:%d %g != %g",  \
+		sprintf(_test_buf,"ERROR %s:%d %.10g != %.10g",  \
         __FILE__, __LINE__, (x), (y));             \
         cunit_report_error(_test_buf);             \
 	}                                              \
