@@ -206,7 +206,7 @@ extern int Differentiate_CosinusTest(int, char**) {
 }
 
 extern int Differentiate_ExpTest(int, char**) {
-    int x = rand() % 1000;
+    int x = 5;
     Function function = Function(exp, "Exp");
     double result = differentiate(function, x, EPS);
 
