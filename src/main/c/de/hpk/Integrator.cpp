@@ -1,5 +1,5 @@
 #include "Integrator.h"
-#include <cmath>
+#include <math.h>
 #include "Function.h"
 #include "NoConvergenceException.h"
 

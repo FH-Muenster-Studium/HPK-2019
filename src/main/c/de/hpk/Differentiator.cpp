@@ -1,7 +1,5 @@
 #include "Differentiator.h"
 
-#include <iostream>
-
 #define ABSOLUTE(i) ((i) > 0 ? (i) : -(i))
 
 #ifdef __cplusplus

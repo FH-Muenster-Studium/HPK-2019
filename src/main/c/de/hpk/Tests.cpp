@@ -3,7 +3,7 @@
 #include "CUnit.h"
 #include "Differentiator.h"
 #include <stdlib.h>
-#include <cmath>
+#include <math.h>
 #include <time.h>
 
 #define EPS (1.E-8)
@@ -206,9 +206,9 @@ extern int Differentiate_CosinusTest(int, char**) {
 }
 
 extern int Differentiate_ExpTest(int, char**) {
-    int x = rand();
+    int x = rand() % 1000;
     Function function = Function(exp, "Exp");
-    double result = differentiate(function, x, EPS1);
+    double result = differentiate(function, x, EPS);
 
     assertEqualsF(result, exp(x), EPS)
 
