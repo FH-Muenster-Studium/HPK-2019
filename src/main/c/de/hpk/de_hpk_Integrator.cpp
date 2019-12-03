@@ -1,5 +1,6 @@
 #include "Integrator.h"
 #include "include/de_hpk_Integrator.h"
+#include "NoConvergenceException.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,9 +16,9 @@ JNIEXPORT jdouble JNICALL Java_de_hpk_Integrator_integrate
     try {
         JavaFunction f = JavaFunction(env, fct);
         dF = integrate(f, a, b, eps);
-    } catch (const char* error) {
+    } catch (NoConvergenceException& exception) {
         jclass jExcepClazz = env->FindClass("java/lang/ArithmeticException");
-        env->ThrowNew(jExcepClazz, error);
+        env->ThrowNew(jExcepClazz, exception.what());
     }
     return (dF);
 }

@@ -18,9 +18,9 @@ JNIEXPORT jdouble JNICALL Java_de_hpk_Differentiator_differentiate
     try {
         JavaFunction f = JavaFunction(env, fct);
         dF = differentiate(f, x, eps);
-    } catch (const char* error) {
+    } catch (NoConvergenceException& exception) {
         jclass jExcepClazz = env->FindClass("java/lang/ArithmeticException");
-        env->ThrowNew(jExcepClazz, error);
+        env->ThrowNew(jExcepClazz, exception.what());
     }
     return (dF);
 }
