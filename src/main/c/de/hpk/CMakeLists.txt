@@ -6,7 +6,7 @@ project (native_tests)
 #find_package(JNI REQUIRED)
 
 #include(UseJava)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I$ENV{JAVA_HOME}/include -I$ENV{JAVA_HOME}/include/darwin")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I$ENV{JAVA_HOME}/include -I$ENV{JAVA_HOME}/include/darwin -I$ENV{JAVA_HOME}/include/linux")
 set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.8" "-target" "1.8")
 include_directories(${JNI_INCLUDE_DIRS})
