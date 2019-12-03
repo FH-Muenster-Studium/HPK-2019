@@ -151,44 +151,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>native-maven-plugin</artifactId>
-                <version>1.0-alpha-9</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <jdkIncludePath>${java.home}/include</jdkIncludePath>
-                    <compilerProvider>generic-classic</compilerProvider>
-                    <compilerExecutable>g++</compilerExecutable>
-                    <compilerStartOptions>
-                        <compilerStartOption>-I ${env.JAVA_HOME}/include -I ${env.JAVA_HOME}/include/linux -I ${env.JAVA_HOME}/include/darwin -I ${env.JAVA_HOME_8_X64}/include -I ${env.JAVA_HOME_8_X64}/include/linux -o executable</compilerStartOption>
-                    </compilerStartOptions>
-                    <sources>
-                        <source>
-                            <directory>src/main/c/de/hpk</directory>
-                            <includes>
-                                <include>*.c</include>
-                                <include>*.cpp</include>
-                            </includes>
-                        </source>
-                    </sources>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>native-compile</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-
         </plugins>
     </build>
 
