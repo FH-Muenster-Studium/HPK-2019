@@ -57,7 +57,7 @@ double integrate(Function &f, double a, double b, double eps) {
     } while (tempAbsoluteEps > eps && (ABSOLUTE(result / last_result - 1.0)) > eps && reps--);
 
     if (reps == -1) throw NoConvergenceException();
-    if (std::isnan(tempAbsoluteEps)) throw NoConvergenceException();
+    if (isnan(tempAbsoluteEps)) throw NoConvergenceException();
     return result;
 }
 #ifdef __cplusplus
